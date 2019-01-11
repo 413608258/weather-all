@@ -1,0 +1,25 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /collection
+spring:
+  redis:
+    host: 172.16.30.103
+    port: 6379
+    password:
+  application:
+    name: weather-collection-server
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+feign:
+  client:
+    config:
+      feignName:
+        connectTimeout: 5000
+        readTimeout: 5000
+  hystrix:
+    enabled: true

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/weather-all.iml" filepath="$PROJECT_DIR$/weather-all.iml" />
+      <module fileurl="file://$PROJECT_DIR$/weather-city-server/weather-city-server.iml" filepath="$PROJECT_DIR$/weather-city-server/weather-city-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/weather-city-server_main.iml" filepath="$PROJECT_DIR$/.idea/modules/weather-city-server_main.iml" group="weather-city-server" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/weather-city-server_test.iml" filepath="$PROJECT_DIR$/.idea/modules/weather-city-server_test.iml" group="weather-city-server" />
+      <module fileurl="file://$PROJECT_DIR$/weather-collection-server/weather-collection-server.iml" filepath="$PROJECT_DIR$/weather-collection-server/weather-collection-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/weather-collection-server_main.iml" filepath="$PROJECT_DIR$/.idea/modules/weather-collection-server_main.iml" group="weather-collection-server" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/weather-collection-server_test.iml" filepath="$PROJECT_DIR$/.idea/modules/weather-collection-server_test.iml" group="weather-collection-server" />
+      <module fileurl="file://$PROJECT_DIR$/weather-config-server/weather-config-server.iml" filepath="$PROJECT_DIR$/weather-config-server/weather-config-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/weather-config-server_main.iml" filepath="$PROJECT_DIR$/.idea/modules/weather-config-server_main.iml" group="weather-config-server" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/weather-config-server_test.iml" filepath="$PROJECT_DIR$/.idea/modules/weather-config-server_test.iml" group="weather-config-server" />
+      <module fileurl="file://$PROJECT_DIR$/weather-data-server/weather-data-server.iml" filepath="$PROJECT_DIR$/weather-data-server/weather-data-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/weather-data-server_main.iml" filepath="$PROJECT_DIR$/.idea/modules/weather-data-server_main.iml" group="weather-data-server" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/weather-data-server_test.iml" filepath="$PROJECT_DIR$/.idea/modules/weather-data-server_test.iml" group="weather-data-server" />
+      <module fileurl="file://$PROJECT_DIR$/weather-eureka-client/weather-eureka-client.iml" filepath="$PROJECT_DIR$/weather-eureka-client/weather-eureka-client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/weather-eureka-client_main.iml" filepath="$PROJECT_DIR$/.idea/modules/weather-eureka-client_main.iml" group="weather-eureka-client" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/weather-eureka-client_test.iml" filepath="$PROJECT_DIR$/.idea/modules/weather-eureka-client_test.iml" group="weather-eureka-client" />
+      <module fileurl="file://$PROJECT_DIR$/weather-eureka-server/weather-eureka-server.iml" filepath="$PROJECT_DIR$/weather-eureka-server/weather-eureka-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/weather-eureka-server_main.iml" filepath="$PROJECT_DIR$/.idea/modules/weather-eureka-server_main.iml" group="weather-eureka-server" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/weather-eureka-server_test.iml" filepath="$PROJECT_DIR$/.idea/modules/weather-eureka-server_test.iml" group="weather-eureka-server" />
+      <module fileurl="file://$PROJECT_DIR$/weather-report-server/weather-report-server.iml" filepath="$PROJECT_DIR$/weather-report-server/weather-report-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/weather-report-server_main.iml" filepath="$PROJECT_DIR$/.idea/modules/weather-report-server_main.iml" group="weather-report-server" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/weather-report-server_test.iml" filepath="$PROJECT_DIR$/.idea/modules/weather-report-server_test.iml" group="weather-report-server" />
+      <module fileurl="file://$PROJECT_DIR$/weather-zuul-server/weather-zuul-server.iml" filepath="$PROJECT_DIR$/weather-zuul-server/weather-zuul-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/weather-zuul-server_main.iml" filepath="$PROJECT_DIR$/.idea/modules/weather-zuul-server_main.iml" group="weather-zuul-server" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/weather-zuul-server_test.iml" filepath="$PROJECT_DIR$/.idea/modules/weather-zuul-server_test.iml" group="weather-zuul-server" />
+    </modules>
+  </component>
+</project>

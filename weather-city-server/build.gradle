@@ -1,0 +1,62 @@
+buildscript {
+    ext {
+        springBootVersion = '2.1.1.RELEASE'
+    }
+    //使用了 Maven 的中央仓库及Spring 自己的仓库(也可以制定其他的库)
+    repositories {
+        //mavenCentral()
+        maven { url "https://repo.spring.io/snapshot"}
+        maven { url "https://repo.spring.io/milestone"}
+        maven { url "https://maven.aliyun.com/nexus/content/groups/public/"}
+    }
+    //依赖关系
+    dependencies {
+        // classpath 声明了在执行其余的脚本时，ClassLoader 可以使用这些依赖项
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+//指定了生成的编译文件的版本, 默认是打成 jar 包
+group = 'con.lous'
+version = '0.0.1-SNAPSHOT'
+
+//指定编译 .java 文件的 JDK 版本
+sourceCompatibility = 1.8
+
+repositories {
+    //mavenCentral()
+    maven { url "https://repo.spring.io/snapshot"}
+    maven { url "https://repo.spring.io/milestone"}
+    maven { url "https://maven.aliyun.com/nexus/content/groups/public/"}
+}
+
+ext {
+    set('springCloudVersion', 'Greenwich.RC2')
+}
+dependencies {
+    //Eureka Client
+    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
+    // 通用依赖
+    compile(
+            //WEB
+            "org.springframework.boot:spring-boot-starter-web",
+    )
+    //lombok
+    //provided group: 'org.projectlombok', name: 'lombok', version: '1.18.4'
+    compileOnly('org.projectlombok:lombok:1.16.20')
+    //fastjson
+    //compile group: 'com.alibaba', name: 'fastjson', version: '1.2.54'
+    compile('com.alibaba:fastjson:1.2.54')
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
+}
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}

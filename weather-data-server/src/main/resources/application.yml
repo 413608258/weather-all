@@ -1,0 +1,15 @@
+server:
+  port: 8081
+
+spring:
+  redis:
+    host: 172.16.30.103
+    port: 6379
+    password:
+  application:
+    name: weather-data-server
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/

@@ -1,0 +1,43 @@
+server:
+  port: 8088
+
+spring:
+  redis:
+    host: 172.16.30.103
+    port: 6379
+    password:
+  application:
+    name: weather-zuul-server
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+feign:
+  client:
+    config:
+      feignName:
+        connectTimeout: 5000
+        readTimeout: 5000
+#stripPrefix: 是否要剥离(去掉)前缀, true 剥离前缀, false 不剥离前缀
+zuul:
+  routes:
+    city:
+      path: /city/**
+      serviceId: weather-city-server
+      stripPrefix: false
+    collection:
+      path: /collection/**
+      serviceId: weather-collection-server
+      stripPrefix: false
+
+#zuul:
+#  routes:
+#    weather-city-server:
+#      path: /city/**
+#      stripPrefix: false
+#    weather-collection-server:
+#      path: /collection/**
+#      stripPrefix: false
+

@@ -1,0 +1,64 @@
+buildscript {
+    ext {
+        springBootVersion = '2.1.1.RELEASE'
+    }
+    repositories {
+        //mavenCentral()
+        maven { url "https://repo.spring.io/snapshot"}
+        maven { url "https://repo.spring.io/milestone"}
+        maven { url "https://maven.aliyun.com/nexus/content/groups/public/"}
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'com.lous'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    //mavenCentral()
+    maven { url "https://repo.spring.io/snapshot"}
+    maven { url "https://repo.spring.io/milestone"}
+    maven { url "https://maven.aliyun.com/nexus/content/groups/public/"}
+}
+
+ext {
+    set('springCloudVersion', 'Greenwich.RC2')
+}
+
+dependencies {
+    implementation('org.springframework.cloud:spring-cloud-starter-netflix-zuul')
+    // 通用依赖
+    compile(
+            //Eureka-client
+            "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client",
+            //WEB
+            "org.springframework.boot:spring-boot-starter-web",
+            //lombok
+            //"org.projectlombok:lombok:1.16.20",
+            //fastjson
+            //"com.alibaba:fastjson:1.2.54",
+            //redis
+            "org.springframework.boot:spring-boot-starter-data-redis",
+            //quartz
+            "org.springframework.boot:spring-boot-starter-quartz:2.1.1.RELEASE",
+            //Feign
+            "org.springframework.cloud:spring-cloud-starter-feign:1.4.6.RELEASE",
+    )
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}

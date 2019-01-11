@@ -1,0 +1,19 @@
+server:
+  port: 8083
+  servlet:
+    context-path: /city
+spring:
+  redis:
+    host: 172.16.30.103
+    port: 6379
+    password:
+  application:
+    name: weather-city-server
+#  mvc:
+#    servlet:
+#      path: /api
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/

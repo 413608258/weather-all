@@ -1,0 +1,87 @@
+buildscript {
+    ext {
+        springBootVersion = '2.1.1.RELEASE'
+    }
+    //使用了 Maven 的中央仓库及Spring 自己的仓库(也可以制定其他的库)
+    repositories {
+        //mavenCentral()
+        maven { url "https://repo.spring.io/snapshot"}
+        maven { url "https://repo.spring.io/milestone"}
+        maven { url "https://maven.aliyun.com/nexus/content/groups/public/"}
+    }
+    //依赖关系
+    dependencies {
+        // classpath 声明了在执行其余的脚本时，ClassLoader 可以使用这些依赖项
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+//指定了生成的编译文件的版本, 默认是打成 jar 包
+group = 'con.lous'
+version = '0.0.1-SNAPSHOT'
+
+//指定编译 .java 文件的 JDK 版本
+sourceCompatibility = 1.8
+
+//使用了 Maven 的中央仓库及Spring 自己的仓库(也可以制定其他的库)
+repositories {
+    //mavenCentral()
+    maven { url "https://repo.spring.io/snapshot"}
+    maven { url "https://repo.spring.io/milestone"}
+    maven { url "https://maven.aliyun.com/nexus/content/groups/public/"}
+}
+
+ext {
+    set('springCloudVersion', 'Greenwich.RC2')
+}
+
+//依赖关系 (配置的核心)
+dependencies {
+    //该依赖用于编译阶段
+    // WEB (也可写在 compile 中)
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    // 通用依赖
+    compile(
+            //redis
+            "org.springframework.boot:spring-boot-starter-data-redis",
+            //httpclient
+            "org.apache.httpcomponents:httpclient:4.5.3",
+            //lombok
+            "org.projectlombok:lombok:1.16.20",
+            //fastjson
+            "com.alibaba:fastjson:1.2.54",
+            //quartz
+            "org.springframework.boot:spring-boot-starter-quartz:2.1.1.RELEASE",
+            //freemarker 模板引擎
+            "org.springframework.boot:spring-boot-starter-freemarker:2.1.1.RELEASE",
+
+            //SpringCloud Eureka Server
+            //"org.springframework.cloud:spring-cloud-starter-netflix-eureka-server",
+
+            //SpringCloud Eureka Client
+            "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client",
+            //SpringCloud Feign
+            "org.springframework.cloud:spring-cloud-starter-feign:1.4.6.RELEASE",
+            //SpringCloud Hystrix
+            "org.springframework.cloud:spring-cloud-starter-netflix-hystrix",
+
+            //SpringCloud Zuul
+            //"org.springframework.cloud:spring-cloud-starter-netflix-zuul",
+
+            //SpringCloud Config
+            //"org.springframework.cloud:spring-cloud-config-server",
+    )
+    //该依赖用于测试阶段
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
+}
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
