@@ -1,0 +1,244 @@
+Spring Cloud Config 	配置中心,利用 git 来集中管理程序中的配置.
+Spring Cloud Netflix	集成众多的 Netflix 的开源软件,包括 Eureka, Hystrix, Zuul, Archaius等.
+Spring Cloud Bus		消息总线,利用分布式消息将服务和服务示例连接在一起,用于在一个集群中传播状态的变化,
+					比如配置更改的事件. 可与Spring Cloud Config 联合实现热部署.
+Spring Cloud for Cloud Foundry	利用 Pivotal Cloudfoundry 集成你的应用程序.CloudFoundry 是VMvare推出的开源 PaaS云平台.(国内不常用)
+Spring Cloud Cloud Foundry Service Broker 为建立管理云托管服务的服务代理提供了一个起点.(国内不常用)
+Spring Cloud Cluster 	基于 Zookeeper,Redis,Hazelcast,Consul实现的领导选举和平民状态模式的抽象和实现.
+Spring Cloud Consul  	基于 Hashicorp Consul 实现的服务发现和配置管理.
+Spring Cloud Security	在 Zuul 代理中为 OAuth2 REST客服端和认证头转发提供负载均衡.
+Spring Cloud Sleuth 	适用于 Spring Cloud 应用程序的分布式跟踪,与Zipkin,HTrace和基于日志(例如:ELK)的跟踪相兼容.可以日志的收集.
+Spring Cloud Data Flow 	一种针对现代运行时可组合的微服务应用程序的云本地编排服务.易于使用 DSL,拖放式GUI和REST API一起简化了基于微服务的数据管道的整体编排.
+Spring Cloud Stream 	一个轻量级的书剑驱动的微服务架构来快速构建可以连接到外部系统的应用程序.使用Apache Kafka或RabbitMQ在SpringBoot应用程序之间发送和接收纤细的简单声明模型.
+Spring Cloud Stream App Starters 	基于SpringBoot为外部系统提供Spring的集成.
+Spring Cloud Task App Starters		Spring Cloud Task App Starters是SpringBoot应用程序,可能是任何进程,包括SpringBatch作业,并可以在数据处理有限的时间终止.		
+Spring Cloud for Amazon Web Services 	与Amazon Web Services 轻松集成.它提供了一种方便的方式来与AWS提供的服务进行交互,使用众所周知的Spring管用语和API(如消息传递和缓存API)
+									开发人员可以围绕托管服务构建应用程序,而无需关心基础设施或维护工作.
+Spring Cloud Connectors 	便于PaaS 应用在各种平台上连接到后端数据库和消息服务.		
+
+
+Eureka 	1.服务注册与发现机制	2.和SpringCloud无缝集成	3.高可用	4.开源
+微服务的消费模式:	一.服务直连模式(url访问)	
+						1.简洁明了	2.平台语言无关性	3.无法保证服务的可用性	4.生产环境比较少用
+					二.客户端发现模式
+						第一步:服务实例启动后,将自己的位置信息提交到服务注册表
+						第二步:客户端从服务注册表进行查询,来获取可用的服务实例
+						第三步:客户端自行使用负载均衡算法从多个服务实例中选择出一个
+					三.服务端发现模式
+						与客户端发现模式最大的区别在于: 负载均衡由服务端来做
+常见的微服务的消费者:	一.Apache HttpClient
+							使用: 1.添加依赖(gradle) compile("org.apache.httpcomponents:httpclient:4.5.3")
+								  2.注入 restTemplate
+									@Configuration
+									public class RestConfiguration {
+										@Autowired
+										private RestTemplateBuilder builder;
+
+										@Bean
+										public RestTemplate restTemplate() {
+											return builder.build();
+										}
+									}
+								   3.使用
+									public class WeatherServiceImpl implements WeatherService {
+
+										@Autowired
+										private RestTemplate restTemplate;
+
+										public WeatherResponse getDataByCityId(String cityId) {
+											String uri = "http://wthrcdn.etouch.cn/weather_mini?citykey=" + cityId;
+											ResponseEntity<String> responseEntity = restTemplate.getForEntity(uri, String.class);
+											WeatherResponse weatherResponse = JSON.parseObject(responseEntity.getBody(), WeatherResponse.class);
+											return weatherResponse;
+										}
+									}
+						二.Ribbon(客户端发现模式)
+								使用:1.添加依赖(gradle) compile('org.springframework.cloud:spring-cloud-starter-netflix-ribbon:2.0.2.RELEASE')
+									 2.注入 restTemplate
+									@Configuration
+									@RibbonClient(name="ribbon-client", configuration=RibbonConfiguration.class)
+									public class RestConfiguration {
+										@Autowired
+										private RestTemplateBuilder builder;
+
+										@Bean
+										@LoadBalanced
+										public RestTemplate restTemplate() {
+											return builder.build();
+										}
+									}
+									3.配置
+									@Configuration
+									public class RibbonConfiguration {
+										@Bean
+										public ZonePreferenceServerListFilter serverListFilter(){
+											ZonePreferenceServerListFilter filter = new ZonePreferenceServerListFilter();
+											filter.setZone("myZone");
+											return filter;
+										}
+										@Bean
+										public Iping ribbonPing() {
+											return new PingUrl();
+										}
+									}
+									4.使用
+									public class CityController {
+										@Autowired
+										private RestTemplate restTemplate;
+										
+										public String listCity(){
+											//通过应用名称来调用
+											String body = restTemplate.getForEntity("http://weather-city-server", String.class);
+											return body;
+										}
+									}
+						三.Feign
+								使用:	1.添加依赖 compile("org.springframework.cloud:spring-cloud-starter-feign:1.4.6.RELEASE")
+										2.启动类上加上 @EnableFeignClients
+										3.编写服务请求 Client 类
+											@FeignClient("weather-city-server")
+											public interface WeatherCityClient {
+
+												@GetMapping("/cities")
+												List<City> listCity();
+
+											}
+										4.使用
+										public class CityTestController(){
+											@Autowired
+											private WeatherCityClient weatherCityClient;
+											
+											public void cityListTest(){
+												List<City> cityList = weatherCityClient.listCity();
+											}
+										}
+常见API网关的实现方式			
+						API网关		
+							好处 1.避免将内部信息邪路给外部	2.为微服务添加额外的安全层	3.支持混合通信协议	
+								 4.降低构建微服务的复杂性	5.微服务模拟与虚拟化	
+							弊端 1.在架构上需要额外考虑更多编排与管理	2.路由逻辑配置要进行统一的管理	
+								 3.可能引发单点故障
+						方式一: NGINX (将 NGINX 作为 API 网关)
+								server{
+									listen	80;
+									server_name		example.org 	www.example.org;
+									...
+								}
+								server{
+									listen	80;
+									server_name		*.example.org;
+									...
+								}
+								server{
+									listen	80;
+									server_name		mail.*;
+									...
+								}
+						方式二: Spring Cloud Zuul 提供了认证,鉴权,限流,动态路由,监控,弹性,安全,负载均衡,
+													协助单点压测,静态响应等边缘服务的框架.
+								(认证,动态路由,安全,压力测试,金丝雀测试,负载削减,静态响应处理,主动/主动交换管理)
+						方式三: Kong 提供微服务 API 网关的管理平台(基于Nginx)
+集中化配置 (Spring Cloud Config)
+						微服务为什么需要集中化配置
+							(1.微服务数量多,配置多 2.手工管理配置繁琐)
+						配置分类
+							按配置的来源划分(主要有源代码,文件,数据库连接,远程调用等)
+							按配置的分类划分(开发环境,测试环境,预发布环境,生产环境等)
+							按配置的集成阶段划分(编译时,打包时和运行时)
+							按配置的加载方式划分(启动加载和动态加载)
+						配置中心的要求
+							面向可配置的编码, 隔离性, 一致性, 集中化配置
+			Spring Cloud Config
+						分布式外部化配置
+							一.Config Server
+							二.config Client
+						一.使用 Config 实现的配置中心 Server 端
+							1.添加依赖 compile("org.springframework.cloud:spring-cloud-config-server")
+							2.启动类上添加注解 @EnableConfigServer
+							3.application.yml 配置
+								spring:
+								  cloud:
+									config:
+									  server:
+										git:
+										  uri: https://github.com/waylau/spring-cloud-microservices-development
+										  searchPaths: config-repo
+							4.验证访问: ip:端口/auther/dev
+						二.集成 Config Client 
+							1.添加依赖 compile()
+							2.不需要添加额外注解
+							3.application.yml配置
+								spring.cloud.config.profile = dev
+								spring.cloud.config.uri = http://ip:端口/ (Config Server 地址)
+							配置中心的文件命名规则
+								/{application}/{profile}[/{label}]
+								/{application}-{profile}.yml
+								/{label}/{application}-{profile}.yml
+								/{application}-{profile}.properties
+								/{label}/{application}-{profile}.properties
+								例子: weather-city-server-dev.yml
+熔断机制	什么是服务的熔断机制
+				1.对该服务的调用执行熔断,对于后续请求,不在继续调用该目标服务,而是直接返回,从而可以快速释放资源.
+				2.保护系统
+			服务熔断的原理
+				断路器
+				断路器模式
+					Microsoft Azure (断路器状态: Open, Clouded, Half-Open)
+					Hystrix 
+			熔断器的意义
+				好处: 系统稳定,减少性能损耗,及时响应
+			熔断器的功能
+				异常处理, 日志记录, 测试失败的操作, 手动复位, 并发, 加速断路, 重试失败请求
+			熔断与降级的区别
+				相似性: 目的一致, 变现类似, 粒度一致(服务级别)
+				区别: 	触发条件不同, 管理目标的层次不同(熔断不分层,降级分层)
+			如何集成 Hystrix
+				1.添加依赖 compile("org.springframework.cloud:spring-cloud-starter-netflix-hystrix")
+				2.启动类上加上注解 @EnableCircuitBreaker
+自动扩展	什么是自动扩展
+				垂直扩展(硬件配置)
+				水平扩展(集群)
+			自动扩展的意义
+				提高了高可用性和容错能力
+				增加了可伸缩性
+				具有最佳的使用率，并节约成本
+				优先考虑某些服务或服务组
+			自动扩展的常见模式
+				自动扩展的不同级别
+					应用程序级别
+					基础架构级别
+			自动扩展的常用方法
+				资源限制
+				特定时间段
+				消息(消息队列)长度
+				业务参数
+				根据预测(历史信息,当前趋势)
+			如何实现微服务的自动扩展
+				要考虑的问题
+					如何管理数千个容器？
+					如何监控它们？
+					在部署工件时如何应用规则和约束？
+					如何利用容器来获得资源效率？
+					如何确保至少有一定数量的最小实例正在运行？
+					如何确保以来服务正常运行？
+					如何进行滚动升级和优雅迁移？
+					如何回滚错误的部署？
+				所需功能
+					依赖两个关键功能
+						一个容器抽象层，在许多物理或虚拟机上提供统一的抽象
+						容器编排和初始化系统在集群抽象之上智能管理部署
+					容器编排
+资源分配常用算法
+			传播（平均分配）
+			装箱（A填满，再用B）
+			随机
+		常用的容器编排技术(开源)
+			Docker Swarm
+			Kubernetes
+			Apache Mesos
+			
+				
+				
+			
+				
+								

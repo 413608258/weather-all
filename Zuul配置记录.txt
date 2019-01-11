@@ -1,0 +1,58 @@
+routes:
+    users: /myusers/**
+	
+为了更细致的控制一个路由, 你可以直接配置路径和服务ID:
+routes:
+    users:
+      path: /myusers/**
+      serviceId: users_service
+这个意味着 HTTP 调用"/myusers"被转发到"users_service"服务. 路由必须配置一个可以被指定为ant风格表达式的"path", 所以“/myusers/*”只能匹配一个层级,
+但"/myusers/**"可以匹配多级.
+
+后端的配置既可以是"serviceId"(对于服务发现中的服务而言), 也可以是"url"(对于物理地址), 例如:
+routes:
+    users:
+      path: /myusers/**
+      url: http://example.com/users_service
+
+这个简单的"url-routes"不会按照 HystrixCommand 执行, 也无法通过Ribbon负载均衡多个URLs. 为了实现这一指定服务路由和配置Ribbon客户端(这个必须在
+Ribbon中禁用Eureka: 具体参考更多信息), 例如:
+zuul:
+  routes:
+    users:
+      path: /myusers/**
+      serviceId: users
+ribbon:
+  eureka:
+    enabled: false
+
+users:
+  ribbon:
+    listOfServers: example.com,google.com             //所使用的Ribbon列表
+
+设置 zuul.prefix 可以为所有的匹配增加前缀, 例如 /api,代理前缀默认会从请求路径中移除(通过 zuul.stripPrefix=false 可以关闭这个功能).
+1.#反响代理配置  
+2.#这里的配置类似nginx的反响代理  
+3.#当请求/api/**会直接交给listOfServers配置的服务器处理  
+4.#当stripPrefix=true的时候 （http://127.0.0.1:8181/api/user/list -> http://192.168.1.100:8080/user/list）  
+5.#当stripPrefix=false的时候（http://127.0.0.1:8181/api/user/list -> http://192.168.1.100:8080/api/user/list）  
+6.zuul.routes.api.path=/api/**  
+7.zuul.routes.api.stripPrefix=false  
+8.api.ribbon.listOfServers=192.168.1.100:8080,192.168.1.101:8080,192.168.1.102:8080
+
+你也可以在指定服务中关闭这个功能:
+
+ zuul:
+  routes:
+    users:
+      path: /myusers/**
+      stripPrefix: false
+在这个例子中, 请求"/myusers/101"将被跳转到"users"服务的"/myusers/101"上.
+
+zuul.routes的键值队实际上绑定到类型为 ZuulProperties 的对象上. 如果你查看这个对象你会发现一个叫"retryable"的字段, 设置为"true"会
+使Ribbon客户端自动在失败时重试(如果你需要修改重试参数, 直接使用Ribbon客户端的配置)
+
+	X-Forwarded-Host 请求头默认在跳转时添加. 通过设置 zuul.addProxyHeaders = false 关闭它. 前缀路径默认剥离, 并且对于后端的请求通过请
+求头"X-Forwarded-Prefix"获取(上面的例子中是"/myusers")
+　　通过 @EnableZuulProxy 应用程序可以作为一个独立的服务, 如果你想设置一个默认路由("/"), 比如 zuul.route.home: /将路由所有的请求(例如: "/**")
+到"home"服务.
