@@ -1,9 +1,9 @@
 server:
-  port: 8761
+  port: 8762
 
 spring:
   application:
-    name: eureka-service
+    name: eureka2-service
   cloud:
     config:
       enabled: false
@@ -20,4 +20,4 @@ eureka:
     fetchRegistry: false
     serviceUrl:
 #      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
-      defaultZone: http://${eureka.instance.hostname}:8762/eureka/
+      defaultZone: http://${eureka.instance.hostname}:8761/eureka/
